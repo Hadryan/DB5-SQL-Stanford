@@ -1,3 +1,16 @@
 # DB5-SQL-Stanford
-SQL Movie-Rating Query 
-Find the difference between the average rating of movies released before 1980 and the average rating of movies released after 1980. (Make sure to calculate the average rating for each movie, then the average of those averages for movies before 1980 and movies after. Don't just calculate the overall average rating before and after 1980.) 
+SQL Movie-Rating Modification Exercises
+
+Q1  Add the reviewer Roger Ebert to your database, with an rID of 209. 
+
+Option1: 
+INSERT INTO Reviewer Values ('209', 'Roger Ebert')
+
+Option2: 
+INSERT INTO Reviewer Values (209, 'Roger Ebert')
+
+Option3: 
+INSERT INTO Reviewer (rID, Name) Values (209, 'Roger Ebert')
+
+
+
