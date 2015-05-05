@@ -18,3 +18,6 @@ option2:
       SELECT distinct Name, Grade FROM Highschooler 
       WHERE id NOT IN (SELECT H1.id FROM Highschooler AS H1, Highschooler AS H2, Friend AS F1
       WHERE H1.id = F1.ID1 AND H2.id = F1.id2 AND H1.grade = H2.grade )
+      
+Q3 What is the average number of friends per student? (Your result should be just one number.) 
+      SELECT AVG(F) FROM (SELECT id1, COUNT(id2) AS F FROM Friend GROUP BY id1)
