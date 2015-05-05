@@ -1,0 +1,82 @@
+
+Q1 Find the names of all students who are friends with someone named Gabriel. 
+      SELECT Name FROM Highschooler AS H
+      WHERE H.ID in (SELECT F.ID1 FROM Friend AS F WHere F.ID2 in(
+      SELECT H.ID FROM Highschooler AS H WHERE H.Name ="Gabriel"))
+      
+Q2 For every student who likes someone 2 or more grades younger than themselves,
+return that student's name and grade, and the name and grade of the student they like. 
+ option1:
+     SELECT sName, sGrade, jName, jGrade
+     From (SELECT H1.Name as sName, H1.Grade AS sGrade, H2.Name AS jName, H2.Grade as jGrade
+     From highschooler H1, Likes, Highschooler H2 
+     Where h1.ID=ID1 AND H2.ID=ID2 )
+     Where sGrade-jGrade >=2 or jGrade-sGrade >=2
+option2:
+     SELECT distinct H1.NAME, H1.GRADE,H2.NAME, H2.GRADE From Highschooler AS H1, Highschooler AS H2,
+     Likes AS L1
+     WHERE H1.id=L1.id1 AND H2.id=L1.id2 AND H1.grade-H2.grade >=2
+     
+Q3 For every pair of students who both like each other, return the name and grade of both students.
+ Include each pair only once, with the two names in alphabetical order. 
+     SELECT distinct H1.Name, H1.Grade,H2.Name, H2.Grade  
+     From Highschooler AS H1, Highschooler AS H2, Likes AS L1, Likes AS L2 
+     WHERE L1.id1=H1.id AND L1.id2=H2.id And L2.id1=L1.id2 AND L2.id2=L1.id1 AND H1.Name<H2.Name
+     Order by H1.Name
+
+Q4  Find all students who do not appear in the Likes table (as a student who likes or is liked)
+and return their names and grades. Sort by grade, then by name within each grade. 
+     SELECT Name, Grade From Highschooler AS H 
+     Where (H.ID NOT IN (SELECT ID1 FROM Likes)) And (H.ID NOT IN (SELECT ID2 FROM Likes))
+     Order by grade, name 
+
+Q5  For every situation where student A likes student B, but we have no information about whom B likes 
+(that is, B does not appear as an ID1 in the Likes table), return A and B's names and grades
+     SELECT H1.Name, H1.Grade, H2.Name, H2.Grade FROM Highschooler AS H1, Highschooler AS H2, Likes AS L
+      Where H1.ID=L.ID1 AND H2.ID=L.ID2 AND (L.ID2 NOT IN (SELECT L.ID1 FROM Likes AS L))
+      
+Q6   Find names and grades of students who only have friends in the same grade. 
+     Return the result sorted by grade, then by name within each grade. 
+option1:
+     SELECT DISTINCT H1.Name, H1.Grade
+     FROM Highschooler AS H1, Highschooler AS H2, Friend AS F 
+     WHERE H1.id = F.id1 AND H2.id=F.id2 AND H1.Grade=H2.Grade
+     Except
+     SELECT DISTINCT H1.Name, H1.Grade
+     FROM Highschooler AS H1, Highschooler AS H2, Friend AS F 
+     WHERE H1.id = F.id1 AND H2.id=F.id2 AND H1.Grade<>H2.Grade
+     Order by H1.Grade,H1.Name
+
+option2:
+     SELECT distinct H1.NAME, H1.GRADE From Highschooler AS H1, Highschooler AS H2,
+     Friend AS F1
+     WHERE H1.id=F1.id1 AND H2.id=F1.id2 AND H1.id not in 
+     (SELECT H1.id From Highschooler AS H1, Highschooler AS H2,
+     Friend AS F1 WHERE H1.id=F1.id1 AND H2.id=F1.id2 AND H1.grade <> H2.grade)
+     Order by H1.GRADE, H1.NAME
+
+Q7 For each student A who likes a student B where the two are not friends,find if they have a friend C in common 
+(who can introduce them!). For all such trios, return the name and grade of A, B, and C. 
+SELECT DISTINCT H1.Name, H1.Grade, H2.Name, H2.Grade, H3.Name, H3.Grade
+FROM Highschooler AS H1, Highschooler AS H2, Highschooler AS H3, 
+     Likes AS L1, Likes AS L2, Friend AS F1, Friend AS F2
+     WHERE H1.id = L1.id1 AND H2.id=L1.id2 AND 
+     H2.id NOT IN (SELECT id2 From Friend WHERE id1=H1.id )
+     AND H3.id =F1.id2 AND H1.id = F1.id1 AND H2.id= F2.id2 AND H3.id=F2.id1
+
+Q8  Find the difference between the number of students in the school and the number of different first names. 
+     SELECT (SELECT Count(ID) From Highschooler)-(SELECT Count (distinct Name) From Highschooler) 
+
+Q9  Find the name and grade of all students who are liked by more than one other student.
+   Option1:
+     SELECT Name, Grade From Highschooler AS H
+     Join (Select L.id2 AS ID, Count (L.id1) AS Count From Likes AS L group by L.id2) AS W
+     ON H.ID= W.ID AND W.Count >=2
+   Option2:
+     SELECT Name, grade From Highschooler
+     WHERE ID IN (
+     Select id2 FROM (Select id2, count(id1) as c FROM Likes group by id2) WHERE C >=2)
+
+
+
+
