@@ -1,0 +1,7 @@
+
+Q1  For every situation where student A likes student B, but student B likes a different student C, 
+return the names and grades of A, B, and C. 
+     SELECT DISTINCT H1.Name, H1.Grade, H2.Name, H2.Grade, H3.Name, H3.Grade
+     FROM Highschooler AS H1, Highschooler AS H2, Highschooler AS H3, Likes AS L1, Likes AS L2
+      WHERE (H1.id = L1.id1 AND H2.id=L1.id2) AND (H2.id = L2.id1 AND H3.id=L2.id2) AND
+      H2.id NOT IN (SELECT id1 From Likes WHERE likes.id2=H1.id ) 
