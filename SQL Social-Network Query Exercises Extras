@@ -21,3 +21,16 @@ option2:
       
 Q3 What is the average number of friends per student? (Your result should be just one number.) 
       SELECT AVG(F) FROM (SELECT id1, COUNT(id2) AS F FROM Friend GROUP BY id1)
+      
+Q4  Find the number of students who are either friends with Cassandra or are friends of friends of Cassandra. 
+Do not count Cassandra, even though technically she is a friend of a friend. 
+      SELECT count(id1) FROM Friend 
+      WHERE id1 IN (SELECT id2 FROM Friend
+      Where id1=(select id From Highschooler where Name = "Cassandra")) 
+      
+Q5  Find the name and grade of the student(s) with the greatest number of friends. 
+      SELECT Name, grade From highschooler
+      where id in
+      (SELECT id1 FROM
+      (SELECT id1, count (id2) AS F FROM Friend group by id1) AS A
+      WHERE F=(select max(F) FROM (SELECT id1, count (id2) AS F FROM Friend group by id1)))
