@@ -1,0 +1,20 @@
+Q1  Find the names of all reviewers who rated Gone with the Wind. 
+     SELECT distinct NAME FROM Reviewer R, rating rr, movie m
+     WHERE r.rID=rr.rID and rr.mID=m.mID and m.title ="Gone with the Wind"
+     
+Q2  For any rating where the reviewer is the same as the director of the movie, 
+return the reviewer name, movie title, and number of stars. 
+     SELECT r.Name, m.title,stars FROM Reviewer R, rating rr, movie m
+     WHERE m.director =r.name and r.rID=rr.rID And m.mID=RR.mID
+
+Q3  (1 point possible)
+Return all reviewer names and movie names together in a single list, alphabetized. 
+(Sorting by the first name of the reviewer and first word in the title is fine; 
+no need for special processing on last names or removing "The".) 
+      SELECT distinct r1.Name
+     FROM Reviewer R1, rating rr1, Reviewer R2, rating rr2, Movie AS M
+     WHERE rr1.Mid=rr2.Mid And ( r1.rID=rr1.rID or r2.rID=rr2.rID) 
+     Union
+     SELECT distinct m.title
+     FROM Movie AS M
+     Order by r1.name, m.title
